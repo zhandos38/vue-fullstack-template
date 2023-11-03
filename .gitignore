@@ -33,3 +33,4 @@ coverage
 .env.production
 
 db
+/public/uploads/*

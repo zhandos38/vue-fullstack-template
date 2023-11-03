@@ -2,12 +2,7 @@
   <main>
     <div class="flex justify-between">
       <span class="text-xl text-900 font-bold"> Категории товаров </span>
-      <Button
-        icon="pi pi-plus"
-        rounded
-        severity="info"
-        @click="IsShowCreateModal = true"
-      />
+      <Button icon="pi pi-plus" rounded severity="info" @click="IsShowCreateModal = true" />
     </div>
     <DataTable
       class="p-datatable-sm mt-4"
@@ -25,15 +20,12 @@
       <Column field="name" header="Наименование"></Column>
       <Column field="img" header="Изображение">
         <template #body="{ data }">
-          <img v-if="data.img" :src="data.img" alt="img" style="height: 60px" />
-          <div v-else>-</div>
+          <img v-if="data.img" :src="`/api/${data.img}`" alt="img" style="height: 60px" />
         </template>
       </Column>
       <Column field="parentId" header="Родитель">
         <template #body="{ data }">
-          {{
-            categories.find((category) => category.id === data.parentId)?.name
-          }}
+          {{ categories.find((category) => category.id === data.parentId)?.name }}
         </template>
       </Column>
       <Column field="action" header="Действие">
@@ -71,91 +63,91 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import Button from "primevue/button";
-import { useAppToast } from "@/helpers/toast";
-import CreateModal from "@/views/category/components/CreateModal.vue";
-import UpdateModal from "@/views/category/components/UpdateModal.vue";
-import { useAppConfirm } from "@/helpers/confirm";
-import { useLoading } from "vue-loading-overlay";
-import { Category } from "@/shared/Category";
-import { remult } from "remult";
+import { onMounted, ref } from 'vue'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import { useAppToast } from '@/helpers/toast'
+import CreateModal from '@/views/category/components/CreateModal.vue'
+import UpdateModal from '@/views/category/components/UpdateModal.vue'
+import { useAppConfirm } from '@/helpers/confirm'
+import { useLoading } from 'vue-loading-overlay'
+import { Category } from '@/shared/Category'
+import { remult } from 'remult'
 
-const toast = useAppToast();
-const confirm = useAppConfirm();
-const $loading = useLoading();
+const toast = useAppToast()
+const confirm = useAppConfirm()
+const $loading = useLoading()
 
-const categoryRepo = remult.repo(Category);
+const categoryRepo = remult.repo(Category)
 
-const dt = ref<any>(null);
-const totalRecords = ref(10);
-const records = ref<Category[]>([]);
+const dt = ref<any>(null)
+const totalRecords = ref(10)
+const records = ref<Category[]>([])
 
 const lazyParams = ref<any>({
   first: 0,
   rows: 0,
   sortField: null,
-  sortOrder: null,
-});
+  sortOrder: null
+})
 
 // load lazy data
 const loadLazyData = async () => {
-  const loader = $loading.show();
+  const loader = $loading.show()
   records.value = await categoryRepo.find({
     limit: lazyParams.value.rows,
-    page: lazyParams.value.page,
-  });
+    page: lazyParams.value.page
+  })
 
-  totalRecords.value = await categoryRepo.count();
-  loader.hide();
-};
+  totalRecords.value = await categoryRepo.count()
+  loader.hide()
+}
 
 // Pagination
 const onPage = (event: any) => {
-  lazyParams.value = event;
-  loadLazyData();
-};
+  lazyParams.value = event
+  loadLazyData()
+}
 
 // Form
-const IsShowCreateModal = ref<boolean>(false);
-const IsShowUpdateModal = ref<boolean>(false);
-const recordId = ref<number>();
+const IsShowCreateModal = ref<boolean>(false)
+const IsShowUpdateModal = ref<boolean>(false)
+const recordId = ref<number>()
 const updateRow = async (id: number) => {
   try {
-    recordId.value = id;
-    IsShowUpdateModal.value = true;
+    recordId.value = id
+    IsShowUpdateModal.value = true
   } catch {
-    toast.showError();
+    toast.showError()
   }
-};
+}
 const handleCloseUpdateModal = () => {
-  loadLazyData();
-  recordId.value = undefined;
-  IsShowUpdateModal.value = false;
-};
+  loadLazyData()
+  recordId.value = undefined
+  IsShowUpdateModal.value = false
+}
 
 // Delete Row
 function deleteRow(id: number) {
   confirm.showDelete({
     accept: async () => {
       try {
-        await categoryRepo.delete(id);
-        toast.showSuccess("Запись удалена");
-        loadLazyData();
+        await categoryRepo.delete(id)
+        toast.showSuccess('Запись удалена')
+        loadLazyData()
       } catch {
-        toast.showError();
+        toast.showError()
       }
-    },
-  });
+    }
+  })
 }
 
-const categories = ref<Category[]>([]);
+const categories = ref<Category[]>([])
 onMounted(async () => {
-  lazyParams.value.rows = dt.value.rows;
-  await loadLazyData();
+  lazyParams.value.rows = dt.value.rows
+  await loadLazyData()
 
-  categories.value = await categoryRepo.find();
-});
+  categories.value = await categoryRepo.find()
+})
 </script>

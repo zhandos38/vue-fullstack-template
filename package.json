@@ -21,6 +21,7 @@
     "cookie-session": "^2.0.0",
     "dayjs": "^1.11.7",
     "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
     "pinia": "^2.0.32",
     "preline": "^1.8.0",
     "primeicons": "^6.0.1",
