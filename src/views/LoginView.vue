@@ -101,6 +101,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { HttpStatusCode } from 'axios'
 import { useAppToast } from '@/helpers/toast'
+import { remult } from 'remult'
 
 const toast = useAppToast()
 const router = useRouter()
@@ -125,13 +126,26 @@ const handleSubmit = async (isFormValid: boolean) => {
     return
   }
 
-  await authStore.login(state.username, state.password).catch((err) => {
-    if (err && err.response && err.response.status === HttpStatusCode.Unauthorized) {
-      toast.showError('Неверный пароль или логин')
-    } else {
-      toast.showError('Возникла какая-то ошибка')
-    }
+  const result = await fetch('/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username: state.username })
   })
+  if (result.ok) {
+    remult.user = await result.json()
+  } else {
+    alert(await result.json())
+  }
+
+  // await authStore.login(state.username, state.password).catch((err) => {
+  //   if (err && err.response && err.response.status === HttpStatusCode.Unauthorized) {
+  //     toast.showError('Неверный пароль или логин')
+  //   } else {
+  //     toast.showError('Возникла какая-то ошибка')
+  //   }
+  // })
 }
 
 onMounted(async () => {
