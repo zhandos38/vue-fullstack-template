@@ -1,15 +1,15 @@
-import { Entity, Fields } from "remult";
+import { Allow, Entity, Fields } from 'remult'
 
-@Entity("categories", {
-  allowApiCrud: true,
+@Entity('categories', {
+  allowApiCrud: Allow.authenticated
 })
 export class Category {
   @Fields.autoIncrement()
-  id = 0;
+  id = 0
   @Fields.string()
-  name = "";
+  name = ''
   @Fields.number()
-  parentId? = 0;
+  parentId? = 0
   @Fields.string()
-  img = "";
+  img = ''
 }

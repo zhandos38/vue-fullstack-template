@@ -8,10 +8,14 @@ const validUsers: UserInfo[] = [
 
 export const auth = Router()
 auth.use(json())
+
 auth.post('/api/login', (req, res) => {
   const user = validUsers.find((user) => user.name === req.body.username)
   if (user) {
-    req.session!['user'] = user
+    req.session = {
+      user: null
+    }
+    req.session = user
     res.json(user)
   } else {
     res.status(404).json('Invalid user')

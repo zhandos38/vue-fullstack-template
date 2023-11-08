@@ -12,6 +12,6 @@ export class AuthController {
     const user = validUsers.find((user) => user.name === username)
 
     if (!user) throw new Error("Invalid user, try 'Steve' or 'Jane'")
-    return (await import('jsonwebtoken')).sign(user, process.env['JWT_SECRET'] || 'my secret')
+    // return (await import('jsonwebtoken')).sign(user, process.env['JWT_SECRET'] || 'my secret')
   }
 }
